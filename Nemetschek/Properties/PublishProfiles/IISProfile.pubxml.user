@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANDuewhSYNkmB3fch/Qaq8gAAAAACAAAAAAAQZgAAAAEAACAAAAAdHQ4rKuV1reugRKkvi/Lmyg4iXG5CvKhSx4Ji92bSqgAAAAAOgAAAAAIAACAAAABkHZ5q/emt4AiOr8RcfR1OZ3c3tRZN6cjtNAe6CMVoySAAAABfgJkE/tzyVWjNdQuL84AG5VkX2wuYHSgPKgbnOJ61L0AAAACvQ8rIpyE1ApnKIoX5rmtY9W9ifnOBZclRdAbdTTe4kmQbPbNSEC9WL+PDGdTfXkjKADm94EmN/mAKzQXVrdfi</EncryptedPassword>
+    <History>True|2025-05-30T12:20:51.0393563Z||;True|2025-05-30T13:14:44.1208258+01:00||;True|2025-05-30T13:13:20.2864979+01:00||;False|2025-05-30T13:13:09.9948056+01:00||;True|2025-05-30T13:11:22.3644545+01:00||;True|2025-05-30T13:09:35.6064084+01:00||;True|2025-05-30T13:08:30.0745140+01:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Server=51.195.139.180%3bDatabase=Nemetschek%3bUser Id=Nemetschek%3bPassword=VyvblynwfA4FRPx%3bTrustServerCertificate=True</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>
