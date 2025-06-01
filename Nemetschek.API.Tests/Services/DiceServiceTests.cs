@@ -22,11 +22,9 @@ namespace Nemetschek.API.Tests.Services
                 .Options;
             ctx = new AppDbContext(options);
 
-            // We need a real DiceRepo
             var repo = new Nemetschek.Data.Repositories.NemetschekRepo(ctx);
             var svc = new DiceService(repo);
 
-            // Seed some existing rolls for this user:
             ctx.DiceRoll.AddRange(
                 new DiceRoll { UserId = userId, Die1 = 1, Die2 = 1, RolledAt = new DateTime(2023, 01, 01) },
                 new DiceRoll { UserId = userId, Die1 = 2, Die2 = 2, RolledAt = new DateTime(2023, 02, 15) },
@@ -50,9 +48,9 @@ namespace Nemetschek.API.Tests.Services
             Assert.InRange(resp.Die1, 1, 6);
             Assert.InRange(resp.Die2, 1, 6);
 
-            // Should have exactly one extra record in the DB after seeding:
+
             var allRolls = ctx.DiceRoll.Where(r => r.UserId == userId).ToList();
-            Assert.Equal(6, allRolls.Count); // 5 seeded + 1 new
+            Assert.Equal(6, allRolls.Count); 
         }
 
         [Fact]
@@ -63,7 +61,6 @@ namespace Nemetschek.API.Tests.Services
 
             await svc.PopulateTestDataForFilteringAsync(userId);
 
-            // We seeded 5 already. PopulateTestData adds 8 more.
             var all = ctx.DiceRoll.Where(r => r.UserId == userId).ToList();
             Assert.Equal(13, all.Count);
         }

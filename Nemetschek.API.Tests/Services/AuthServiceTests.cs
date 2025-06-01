@@ -62,8 +62,6 @@ namespace Nemetschek.API.Tests.Services
             var resp = await svc.AuthenticateAsync(req);
             Assert.NotNull(resp);
             Assert.False(string.IsNullOrEmpty(resp.Token));
-
-            // Optionally: validate that “sub” claim is a GUID that matches “user.Id”
         }
 
         [Fact]

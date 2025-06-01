@@ -80,7 +80,6 @@ namespace Nemetschek.Data.Tests.Repositories
             var rolls = repo.GetDiceRollsByUser(userId).ToList();
             Assert.Equal(2, rolls.Count);
 
-            // Confirm ordering does not matter; just that both appear
             Assert.Contains(rolls, r => r.Die1 == 2 && r.Die2 == 5);
             Assert.Contains(rolls, r => r.Die1 == 3 && r.Die2 == 4);
         }

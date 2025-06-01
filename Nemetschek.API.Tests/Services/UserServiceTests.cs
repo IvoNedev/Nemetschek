@@ -24,9 +24,6 @@ namespace Nemetschek.API.Tests.Services
             var ctx = new AppDbContext(options);
 
             var hasher = new PasswordHasher<User>();
-            // We can use a real hasher here.
-
-            // We’ll need a real repo implementation, so:
             var repo = new Nemetschek.Data.Repositories.NemetschekRepo(ctx);
 
             return new UserService(repo, hasher);
@@ -62,14 +59,13 @@ namespace Nemetschek.API.Tests.Services
             Assert.NotNull(resp.PhotoBase64);
             Assert.True(resp.PhotoBase64.Length > 0);
 
-            // Also verify it’s actually in the database with a hashed password:
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase("TestDb1")
                 .Options;
             using var ctx2 = new AppDbContext(options);
             var stored = await ctx2.User.SingleOrDefaultAsync(u => u.Email == "alice@example.com");
             Assert.NotNull(stored);
-            Assert.NotEqual("P@ssw0rd!", stored.PasswordHash); // must be hashed
+            Assert.NotEqual("P@ssw0rd!", stored.PasswordHash); 
         }
 
         [Fact]
@@ -81,8 +77,8 @@ namespace Nemetschek.API.Tests.Services
             {
                 FirstName = "Bob",
                 LastName = "Brown",
-                Email = "",        // invalid
-                Password = "",     // invalid
+                Email = "", 
+                Password = "", 
             };
 
             await Assert.ThrowsAsync<ArgumentException>(
