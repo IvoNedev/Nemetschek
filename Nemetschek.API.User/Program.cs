@@ -29,6 +29,8 @@ builder.Services.AddCustomSwagger();
 //Add JWT
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+builder.Services.AddRateLimitingPolicy();
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 
 builder.Services.AddAuthorization();
@@ -45,5 +47,6 @@ app.UseSwaggerUI(c =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 app.Run();

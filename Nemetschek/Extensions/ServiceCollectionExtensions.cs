@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace Nemetschek.API.Extensions
 {
@@ -28,11 +29,19 @@ namespace Nemetschek.API.Extensions
             AddServices(services);
         }
 
+        /// <summary>
+        /// Function that ads all repositories to the <see cref="IServiceCollection"/> in scope.
+        /// </summary>
+        /// <param name="services"></param>
         private static void AddRepositories(IServiceCollection services)
         {
             services.AddScoped<INemetschekRepo, NemetschekRepo>();
         }
 
+        /// <summary>
+        /// Function that adds all services to the <see cref="IServiceCollection"/> in scope.
+        /// </summary>
+        /// <param name="services"></param>
         private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<IPingtService, PingService>();
@@ -42,12 +51,21 @@ namespace Nemetschek.API.Extensions
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         }
 
+        /// <summary>
+        /// Function that adds the <see cref="AppDbContext"/> to the <see cref="IServiceCollection"/> in scope, using the connection string from the configuration.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(connectionString));
         }
 
+        /// <summary>
+        /// Function that adds custom Swagger configuration to the <see cref="IServiceCollection"/> in scope.
+        /// </summary>
+        /// <param name="services"></param>
         public static void AddCustomSwagger(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
@@ -76,6 +94,11 @@ namespace Nemetschek.API.Extensions
             });
         }
 
+        /// <summary>
+        /// Function that adds JWT authentication to the <see cref="IServiceCollection"/> in scope, using the configuration settings for JWT.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -95,6 +118,32 @@ namespace Nemetschek.API.Extensions
                 });
 
             services.AddAuthorization();
+        }
+
+        /// <summary>
+        /// Function that adds a rate limiting policy to the <see cref="IServiceCollection"/> in scope, which limits requests based on the client's IP address.
+        /// </summary>
+        /// <param name="services"></param>
+        public static void AddRateLimitingPolicy(this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.AddPolicy("PerIpPolicy", httpContext =>
+                {
+                    var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    return RateLimitPartition.GetTokenBucketLimiter(
+                      partitionKey: clientIp,
+                      factory: _ => new TokenBucketRateLimiterOptions
+                      {
+                          TokenLimit = 30,            // max tokens in bucket
+                          QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                          QueueLimit = 0,             // no queuing—drop immediately if empty
+                          ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                          TokensPerPeriod = 30,
+                          AutoReplenishment = true
+                      });
+                });
+            });
         }
 
     }
